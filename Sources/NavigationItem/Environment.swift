@@ -11,14 +11,14 @@ import UIKit
 
 struct NavigationControllerKey: EnvironmentKey {
     static var defaultValue: UINavigationController? {
-        return nil
+        nil
     }
 }
 
 extension EnvironmentValues {
     var navigationController: UINavigationController? {
         get {
-            return self[NavigationControllerKey.self]
+            self[NavigationControllerKey.self]
         }
         set {
             self[NavigationControllerKey.self] = newValue

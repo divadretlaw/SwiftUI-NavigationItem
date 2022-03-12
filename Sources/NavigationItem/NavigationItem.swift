@@ -8,16 +8,15 @@
 import SwiftUI
 
 extension View {
-    public func navigationItem(customize: @escaping (UINavigationItem) -> ()) -> some View {
-        self.modifier(NavigationControllerModifier(customize: customize))
+    public func navigationItem(customize: @escaping (UINavigationItem) -> Void) -> some View {
+        modifier(NavigationControllerModifier(customize: customize))
     }
 }
 
 struct NavigationControllerModifier: ViewModifier {
-    let customize: (UINavigationItem) -> ()
+    let customize: (UINavigationItem) -> Void
     
     @Environment(\.navigationController) var navigationController
-    
     @State private var holder: UINavigationController?
     
     func body(content: Content) -> some View {
@@ -28,12 +27,12 @@ struct NavigationControllerModifier: ViewModifier {
                     
                     if last.children.isEmpty {
                         DispatchQueue.main.async {
-                            guard let navigationItem = navigationController.children.last?.navigationItem else { return }
-                            customize(navigationItem)
+                            guard let viewController = navigationController.children.last else { return }
+                            customize(viewController.navigationItem)
                         }
                     } else {
-                        guard let navigationItem = last.children.last?.navigationItem else { return }
-                        customize(navigationItem)
+                        guard let viewController = last.children.last else { return }
+                        customize(viewController.navigationItem)
                     }
                 }
         } else {
@@ -44,12 +43,8 @@ struct NavigationControllerModifier: ViewModifier {
     }
     
     var overlay: some View {
-        ViewControllerReader {
-            if let navigationController = $0.navigationController {
-                holder = navigationController
-            } else {
-                holder = $0.siblingNavigationController()
-            }
+        FindNavigationController {
+            holder = $0
         }
         .frame(width: 0, height: 0)
         .onAppear {
