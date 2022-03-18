@@ -36,8 +36,8 @@ extension UIViewController {
         for child in children {
             if let navigationController = child as? UINavigationController {
                 return navigationController
-            } else {
-                return child.findNavigationController()
+            } else if let navigationController = child.findNavigationController() {
+                return navigationController
             }
         }
         

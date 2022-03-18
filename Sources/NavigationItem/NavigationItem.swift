@@ -13,14 +13,21 @@ extension View {
     }
 }
 
+extension NavigationView {
+    public func navigationItem(customize: @escaping (UINavigationItem) -> Void) -> some View {
+        modifier(NavigationControllerModifier(customize: customize, forceEnvironment: true))
+    }
+}
+
 struct NavigationControllerModifier: ViewModifier {
     let customize: (UINavigationItem) -> Void
-    
+    var forceEnvironment: Bool = false
+
     @Environment(\.navigationController) var navigationController
     @State private var holder: UINavigationController?
     
     func body(content: Content) -> some View {
-        if let navigationController = navigationController {
+        if !forceEnvironment, let navigationController = navigationController {
             content
                 .onAppear {
                     guard let last = navigationController.children.last else { return }
@@ -49,7 +56,7 @@ struct NavigationControllerModifier: ViewModifier {
         .frame(width: 0, height: 0)
         .onAppear {
             DispatchQueue.main.async {
-                guard let item = holder?.children.last?.navigationItem else { return }
+                guard let item = holder?.visibleViewController?.navigationItem else { return }
                 customize(item)
             }
         }
