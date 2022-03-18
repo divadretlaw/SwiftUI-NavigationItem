@@ -30,15 +30,14 @@ struct NavigationControllerModifier: ViewModifier {
         if !forceEnvironment, let navigationController = navigationController {
             content
                 .onAppear {
-                    guard let last = navigationController.children.last else { return }
-                    
-                    if last.children.isEmpty {
+                    if navigationController.children.count == 1 {
+                        // RootViewContoller is still the visibleViewController, try again delayed
                         DispatchQueue.main.async {
-                            guard let viewController = navigationController.children.last else { return }
+                            guard let viewController = navigationController.visibleViewController else { return }
                             customize(viewController.navigationItem)
                         }
                     } else {
-                        guard let viewController = last.children.last else { return }
+                        guard let viewController = navigationController.visibleViewController else { return }
                         customize(viewController.navigationItem)
                     }
                 }
