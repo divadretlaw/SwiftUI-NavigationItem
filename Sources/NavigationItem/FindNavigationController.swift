@@ -17,7 +17,15 @@ struct FindNavigationController: UIViewControllerRepresentable {
     
     func updateUIViewController(_ uiViewController: InjectViewController, context: Context) {
         DispatchQueue.main.async {
-            onUpdate(uiViewController.navigationController())
+            guard let viewController = uiViewController.navigationController() else {
+                print("Warning: Attempting to access navigationItem without being attached to NavigationView. Please attach `.navigationItem()` to your NavigationView or this might fail.")
+                DispatchQueue.main.async {
+                    onUpdate(uiViewController.navigationController())
+                }
+                return
+            }
+            
+            onUpdate(viewController)
         }
     }
 }

@@ -7,7 +7,7 @@ With this modifier you can easily customize the `UINavigationItem` of your Swift
 
 ## Usage
 
-The `.navigationItem` modifier has to be applied to the `NavigationItem` because otherwise the Environment will not be applied to the `NavigationLink` destinations. On child views you can apply them anywhere just like `.navigationTitle`
+The `.navigationItem` modifier has to be applied to the `NavigationItem` (or `NavigationStack`, `NavigationSplitView` when using iOS 16+) because otherwise the Environment will not be applied to the `NavigationLink` destinations. On child views you can apply them anywhere just like `.navigationTitle`
 
 ```swift
 NavigationView {
